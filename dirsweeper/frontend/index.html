@@ -28,8 +28,6 @@
       --md-sys-color-error: #F2B8B5;
       --md-sys-color-on-error: #601410;
       --md-sys-color-surface: #1B1B2B;
-      --md-sys-color-surface-dim: #1B1B2B;
-      --md-sys-color-surface-bright: #3D3D50;
       --md-sys-color-surface-container-lowest: #161625;
       --md-sys-color-surface-container-low: #1F1F31;
       --md-sys-color-surface-container: #212132;
@@ -37,7 +35,6 @@
       --md-sys-color-surface-container-highest: #363649;
       --md-sys-color-on-surface: #E6E1E5;
       --md-sys-color-on-surface-variant: #CAC4D0;
-      --md-sys-color-outline: #938F99;
       --md-sys-color-outline-variant: #49454F;
       --md-sys-color-inverse-surface: #E6E1E5;
       --md-sys-color-inverse-on-surface: #32293C;
@@ -57,7 +54,6 @@
       overflow-x: hidden;
       padding-bottom: 72px;
     }
-
     .top-app-bar {
       position: sticky; top: 0; z-index: 100;
       background: var(--md-sys-color-surface);
@@ -74,7 +70,6 @@
       display: flex; align-items: center; justify-content: center;
       color: var(--md-sys-color-on-primary-container); font-size: 22px;
     }
-
     .input-section { padding: 0 16px 16px; }
     .filled-field {
       background: var(--md-sys-color-surface-container-high);
@@ -93,7 +88,6 @@
     }
     .filled-field input::placeholder { color: var(--md-sys-color-on-surface-variant); opacity: 0.7; }
     .helper { font-size: 11px; color: var(--md-sys-color-on-surface-variant); padding: 4px 0 12px; letter-spacing: 0.4px; }
-
     .options-row { display: flex; gap: 8px; padding: 0 16px 16px; flex-wrap: wrap; }
     .option-chip {
       display: flex; align-items: center; gap: 6px;
@@ -109,7 +103,6 @@
       background: var(--md-sys-color-secondary-container);
       color: var(--md-sys-color-on-secondary-container); border-color: transparent;
     }
-
     .btn-section { padding: 0 16px 16px; }
     .btn-filled {
       width: 100%; height: 56px; border-radius: var(--md-shape-full);
@@ -127,7 +120,6 @@
       color: var(--md-sys-color-on-surface-variant); cursor: not-allowed;
     }
     .btn-filled .material-icons-round { font-size: 20px; }
-
     .progress-section { padding: 0 16px 8px; }
     .progress-linear-wrap {
       background: var(--md-sys-color-surface-container-highest);
@@ -138,7 +130,6 @@
       border-radius: var(--md-shape-full); transition: width 0.3s ease;
     }
     .progress-text { font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-top: 6px; text-align: right; }
-
     .stats-row { display: flex; gap: 8px; padding: 8px 16px 16px; }
     .stat-card {
       flex: 1; background: var(--md-sys-color-surface-container);
@@ -148,7 +139,6 @@
     .stat-card .lbl { font-size: 11px; color: var(--md-sys-color-on-surface-variant); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
     .stat-card.found .num { color: var(--md-sys-color-tertiary); }
     .stat-card.ok .num { color: #8BD6AA; }
-
     .results-section { padding: 0 16px 100px; }
     .result-item {
       background: var(--md-sys-color-surface-container);
@@ -171,11 +161,9 @@
     .result-item .meta { font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .copy-btn { background: none; border: none; color: var(--md-sys-color-on-surface-variant); cursor: pointer; padding: 4px; border-radius: var(--md-shape-full); }
     .copy-btn:hover { background: var(--md-sys-color-surface-container-highest); }
-
     .empty-state { text-align: center; padding: 48px 24px; color: var(--md-sys-color-on-surface-variant); }
     .empty-state .material-icons-round { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
     .empty-state p { font-size: 14px; line-height: 1.5; }
-
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: var(--md-sys-color-surface-container-highest);
@@ -192,7 +180,6 @@
     .nav-item .material-icons-round { font-size: 24px; }
     .nav-item.active { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
     .nav-item:not(.active):hover { background: var(--md-sys-color-surface-container); }
-
     .snackbar {
       position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px);
       background: var(--md-sys-color-inverse-surface); color: var(--md-sys-color-inverse-on-surface);
@@ -201,7 +188,6 @@
       max-width: 90%; text-align: center;
     }
     .snackbar.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.5);
       z-index: 200; display: none; align-items: flex-end; justify-content: center;
@@ -229,7 +215,6 @@
       padding: 12px; font-size: 13px; color: var(--md-sys-color-primary);
       word-break: break-all; margin: 12px 0; font-family: monospace;
     }
-
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
     .scanning .material-icons-round { animation: pulse 1s infinite; }
   </style>
@@ -306,18 +291,44 @@
   </div>
 
 <script>
-  let currentScanId = null;
-  let allResults = [];
-  const BACKEND_URL = (function(){
-    var h = window.location.hostname;
-    if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:8000';
-    return '';
-  })();
+  var COMMON_PATHS = [
+    "", "/", "/index.html", "/index.htm", "/home",
+    "/about", "/contact", "/contact-us", "/about-us",
+    "/blog", "/news", "/articles",
+    "/admin", "/administrator", "/admin panel", "/wp-admin",
+    "/login", "/logout", "/signup", "/register", "/auth",
+    "/api", "/api/v1", "/api/v2", "/graphql", "/graphiql",
+    "/dashboard", "/panel", "/control", "/cpanel",
+    "/config", "/configuration", "/settings",
+    "/static", "/assets", "/media", "/images", "/css", "/js",
+    "/docs", "/documentation", "/help", "/support",
+    "/favicon.ico", "/robots.txt", "/sitemap.xml", "/.env",
+    "/.git", "/.gitignore", "/.svn", "/.htaccess",
+    "/wp-login.php", "/wp-content", "/wp-includes",
+    "/xmlrpc.php", "/wp-config.php",
+    "/phpmyadmin", "/mysql", "/db", "/database",
+    "/server-status", "/server-info", "/info", "/phpinfo",
+    "/test", "/testing", "/staging", "/dev",
+    "/backup", "/backups", "/dump", "/sql",
+    "/upload", "/uploads", "/files", "/file",
+    "/search", "/profile", "/user", "/users",
+    "/product", "/products", "/shop", "/store", "/cart",
+    "/order", "/orders", "/checkout",
+    "/tag", "/tags", "/category", "/categories",
+    "/feed", "/rss", "/atom",
+    "/health", "/healthz", "/status", "/ping",
+    "/metrics", "/prometheus",
+    "/swagger-ui", "/swagger", "/openapi",
+    "/actuator", "/actuator/health",
+    "/debug", "/trace",
+  ];
+
+  var allResults = [];
 
   function toggleChip(el) { el.classList.toggle('active'); }
 
   function getActiveFilters() {
-    const f = [];
+    var f = [];
     if (document.getElementById('chip200').classList.contains('active')) f.push(2);
     if (document.getElementById('chip300').classList.contains('active')) f.push(3);
     if (document.getElementById('chip403').classList.contains('active')) f.push(403);
@@ -326,10 +337,10 @@
   }
 
   function showToast(msg) {
-    const sb = document.getElementById('snackbar');
+    var sb = document.getElementById('snackbar');
     sb.textContent = msg;
     sb.classList.add('show');
-    setTimeout(() => sb.classList.remove('show'), 2500);
+    setTimeout(function(){ sb.classList.remove('show'); }, 2500);
   }
 
   function escapeHtml(s) {
@@ -337,67 +348,75 @@
   }
 
   function resetBtn() {
-    const btn = document.getElementById('scanBtn');
+    var btn = document.getElementById('scanBtn');
     btn.disabled = false;
     btn.innerHTML = '<span class="material-icons-round">bolt</span> 开始扫描';
     btn.classList.remove('scanning');
   }
 
+  async function makeRequest(base, path) {
+    var url = path === '' || path === '/' ? base : base + (base.endsWith('/') ? '' : '/') + path.replace(/^\//, '');
+    try {
+      var res = await fetch(url, {
+        method: 'GET',
+        redirect: 'manual',
+        mode: 'no-cors',
+        cache: 'no-cache',
+      });
+      return { status: res.status, path: path || '/', url: url };
+    } catch (e) {
+      return null;
+    }
+  }
+
   async function startScan() {
-    const urlInput = document.getElementById('targetUrl');
-    const url = urlInput.value.trim();
-    if (!url) { showToast('请输入目标网址'); urlInput.focus(); return; }
-    const btn = document.getElementById('scanBtn');
+    var urlInput = document.getElementById('targetUrl');
+    var rawUrl = urlInput.value.trim();
+    if (!rawUrl) { showToast('请输入目标网址'); urlInput.focus(); return; }
+    if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
+      rawUrl = 'https://' + rawUrl;
+    }
+    var base = rawUrl.replace(/\/$/, '');
+
+    var btn = document.getElementById('scanBtn');
     btn.disabled = true;
     btn.innerHTML = '<span class="material-icons-round scanning">sync</span> 扫描中...';
     btn.classList.add('scanning');
     document.getElementById('progressSection').style.display = 'block';
     document.getElementById('progressBar').style.width = '0%';
-    document.getElementById('progressText').textContent = '0 / 0';
+    document.getElementById('progressText').textContent = '0 / ' + COMMON_PATHS.length;
     document.getElementById('statsRow').style.display = 'none';
     document.getElementById('resultsList').innerHTML = '';
     document.getElementById('emptyState').style.display = 'none';
     allResults = [];
-    currentScanId = null;
 
-    try {
-      const res = await fetch(BACKEND_URL + '/api/scan/start', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({url: url, thread_count: 50, timeout: 3.0})
-      });
-      const data = await res.json();
-      currentScanId = data.scan_id;
-      document.getElementById('progressText').textContent = '0 / ' + data.total_paths;
-      pollScan();
-    } catch (e) {
-      showToast('连接服务器失败，请检查网络');
-      resetBtn();
-    }
-  }
+    var results = [];
+    var completed = 0;
+    var startTime = Date.now();
 
-  async function pollScan() {
-    if (!currentScanId) return;
-    try {
-      const res = await fetch(BACKEND_URL + '/api/scan/' + currentScanId);
-      const data = await res.json();
-      document.getElementById('progressBar').style.width = ((data.progress / data.total) * 100).toFixed(1) + '%';
-      document.getElementById('progressText').textContent = data.progress + ' / ' + data.total;
-      if (data.results.length > 0) renderResults(data.results);
-      if (data.status === 'completed') {
-        clearInterval(pollTimer);
-        allResults = data.results;
-        document.getElementById('statDuration').textContent = Math.round(data.duration || 5) + 's';
-        resetBtn();
-        showToast('扫描完成');
+    for (var i = 0; i < COMMON_PATHS.length; i++) {
+      var path = COMMON_PATHS[i];
+      var result = await makeRequest(base, path);
+      if (result) {
+        results.push(result);
       }
-    } catch (e) { console.error(e); }
+      completed++;
+      document.getElementById('progressBar').style.width = ((completed / COMMON_PATHS.length) * 100).toFixed(1) + '%';
+      document.getElementById('progressText').textContent = completed + ' / ' + COMMON_PATHS.length;
+      if (results.length > 0) renderResults(results, base);
+    }
+
+    allResults = results;
+    var elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    document.getElementById('statDuration').textContent = elapsed + 's';
+    resetBtn();
+    showToast('扫描完成 (' + allResults.length + ' 条存活路径)');
   }
 
-  function renderResults(results) {
-    const list = document.getElementById('resultsList');
-    const filters = getActiveFilters();
-    const filtered = results.filter(function(r) {
+  function renderResults(results, base) {
+    var list = document.getElementById('resultsList');
+    var filters = getActiveFilters();
+    var filtered = results.filter(function(r) {
       var s = r.status;
       if (s >= 200 && s < 300) return filters.includes(2);
       if (s >= 300 && s < 400) return filters.includes(3);
@@ -409,56 +428,54 @@
     document.getElementById('statFound').textContent = filtered.length;
     document.getElementById('statsRow').style.display = 'flex';
     list.innerHTML = filtered.map(function(r) {
-      var title = r.title ? r.title.substring(0,40) + (r.title.length > 40 ? '...' : '') : '';
-      return '<div class="result-item" onclick="showDetail(' + JSON.stringify(r).replace(/"/g,'&quot;') + ')">' +
+      var fullUrl = r.url || (base + (r.path === '/' ? '' : '/' + r.path));
+      return '<div class="result-item" onclick="showDetail(\'' + escapeHtml(r.path) + '\',\'' + escapeHtml(fullUrl) + '\',' + r.status + ')">' +
         '<div class="status-badge status-' + r.status + '">' + r.status + '</div>' +
         '<div class="info">' +
           '<div class="path">' + escapeHtml(r.path) + '</div>' +
-          '<div class="meta">' + escapeHtml(title) + (r.words ? ' &middot; ' + r.words + ' words' : '') + '</div>' +
+          '<div class="meta">状态码: ' + r.status + '</div>' +
         '</div>' +
-        '<button class="copy-btn" onclick="event.stopPropagation();copyUrl(\'' + escapeHtml(r.url) + '\')">' +
+        '<button class="copy-btn" onclick="event.stopPropagation();copyUrl(\'' + escapeHtml(fullUrl) + '\')">' +
           '<span class="material-icons-round">content_copy</span>' +
         '</button></div>';
     }).join('');
   }
 
-  function showDetail(r) {
-    document.getElementById('modalTitle').textContent = '路径: ' + r.path;
-    document.getElementById('modalUrl').textContent = r.url;
+  window.showDetail = function(path, url, status) {
+    document.getElementById('modalTitle').textContent = '路径: ' + path;
+    document.getElementById('modalUrl').textContent = url;
     document.getElementById('modalDetails').innerHTML =
-      '<div class="detail-row"><span class="label">状态码</span><span class="value">' + r.status + '</span></div>' +
-      '<div class="detail-row"><span class="label">标题</span><span class="value">' + (r.title || '无') + '</span></div>' +
-      '<div class="detail-row"><span class="label">页面字数</span><span class="value">' + r.words + '</span></div>' +
-      '<div class="detail-row"><span class="label">完整 URL</span><span class="value">' + escapeHtml(r.url) + '</span></div>';
+      '<div class="detail-row"><span class="label">状态码</span><span class="value">' + status + '</span></div>' +
+      '<div class="detail-row"><span class="label">完整 URL</span><span class="value">' + escapeHtml(url) + '</span></div>';
     document.getElementById('modalOverlay').classList.add('show');
-  }
+  };
 
-  function closeModal(e) {
+  window.closeModal = function(e) {
     if (e.target === document.getElementById('modalOverlay')) {
       document.getElementById('modalOverlay').classList.remove('show');
     }
-  }
+  };
 
-  function copyUrl(url) {
+  window.copyUrl = function(url) {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url).then(function(){ showToast('已复制'); });
     } else {
       showToast('复制失败');
     }
-  }
+  };
 
-  async function exportResults() {
+  window.exportResults = function() {
     if (allResults.length === 0) { showToast('暂无结果可导出'); return; }
-    var text = allResults.map(function(r) { return r.status + '  ' + r.url; }).join('\n');
+    var text = allResults.map(function(r) { return r.status + '  ' + (r.url || r.path); }).join('\n');
     var blob = new Blob([text], {type: 'text/plain'});
     var file = new File([blob], 'dirsweeper_results.txt', {type: 'text/plain'});
     if (navigator.share && navigator.canShare && navigator.canShare({files: [file]})) {
-      try { await navigator.share({files: [file], title: 'DirSweeper 扫描结果'}); }
+      try { navigator.share({files: [file], title: 'DirSweeper 扫描结果'}); }
       catch(e) { if (e.name !== 'AbortError') downloadFile(text); }
     } else {
       downloadFile(text);
     }
-  }
+  };
 
   function downloadFile(text) {
     var a = document.createElement('a');
@@ -469,16 +486,16 @@
     showToast('已下载结果文件');
   }
 
-  function showAbout() {
+  window.showAbout = function() {
     document.getElementById('modalTitle').textContent = '关于 DirSweeper';
     document.getElementById('modalUrl').textContent = 'v1.0.0';
     document.getElementById('modalDetails').innerHTML =
       '<div class="detail-row"><span class="label">用途</span><span class="value">网站目录扫描工具</span></div>' +
       '<div class="detail-row"><span class="label">功能</span><span class="value">探测常见路径、子目录及敏感文件</span></div>' +
-      '<div class="detail-row"><span class="label">词库</span><span class="value">100+ 常见 Web 路径</span></div>' +
+      '<div class="detail-row"><span class="label">词库</span><span class="value">106 常见 Web 路径</span></div>' +
       '<div class="detail-row"><span class="label">界面</span><span class="value">Material Design 3</span></div>';
     document.getElementById('modalOverlay').classList.add('show');
-  }
+  };
 
   document.getElementById('targetUrl').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') startScan();
