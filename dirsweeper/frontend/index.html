@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1B1B2B" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>DirSweeper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <style>
+    :root {
+      --md-sys-color-primary: #D0BCFF;
+      --md-sys-color-on-primary: #381E72;
+      --md-sys-color-primary-container: #4F378B;
+      --md-sys-color-on-primary-container: #EADDFF;
+      --md-sys-color-secondary: #CCC2DC;
+      --md-sys-color-on-secondary: #332D41;
+      --md-sys-color-secondary-container: #4A4458;
+      --md-sys-color-on-secondary-container: #E8DEF8;
+      --md-sys-color-tertiary: #EFB8C8;
+      --md-sys-color-on-tertiary: #492532;
+      --md-sys-color-tertiary-container: #633B48;
+      --md-sys-color-on-tertiary-container: #FFD8E4;
+      --md-sys-color-error: #F2B8B5;
+      --md-sys-color-on-error: #601410;
+      --md-sys-color-surface: #1B1B2B;
+      --md-sys-color-surface-dim: #1B1B2B;
+      --md-sys-color-surface-bright: #3D3D50;
+      --md-sys-color-surface-container-lowest: #161625;
+      --md-sys-color-surface-container-low: #1F1F31;
+      --md-sys-color-surface-container: #212132;
+      --md-sys-color-surface-container-high: #2B2B3D;
+      --md-sys-color-surface-container-highest: #363649;
+      --md-sys-color-on-surface: #E6E1E5;
+      --md-sys-color-on-surface-variant: #CAC4D0;
+      --md-sys-color-outline: #938F99;
+      --md-sys-color-outline-variant: #49454F;
+      --md-sys-color-inverse-surface: #E6E1E5;
+      --md-sys-color-inverse-on-surface: #32293C;
+      --md-shape-xs: 8px;
+      --md-shape-sm: 12px;
+      --md-shape-md: 16px;
+      --md-shape-lg: 28px;
+      --md-shape-full: 9999px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--md-sys-color-surface);
+      color: var(--md-sys-color-on-surface);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      padding-bottom: 72px;
+    }
+
+    .top-app-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--md-sys-color-surface);
+      padding: 16px 16px 0;
+    }
+    .top-app-bar .row {
+      display: flex; align-items: center; justify-content: space-between; padding: 12px 8px;
+    }
+    .top-app-bar h1 { font-size: 22px; font-weight: 400; color: var(--md-sys-color-on-surface); }
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: var(--md-sys-color-primary-container);
+      border-radius: var(--md-shape-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--md-sys-color-on-primary-container); font-size: 22px;
+    }
+
+    .input-section { padding: 0 16px 16px; }
+    .filled-field {
+      background: var(--md-sys-color-surface-container-high);
+      border-radius: var(--md-shape-xs);
+      padding: 16px 16px 0;
+    }
+    .filled-field label {
+      font-size: 12px; font-weight: 500;
+      color: var(--md-sys-color-on-surface-variant);
+      letter-spacing: 0.1px; line-height: 1; margin-bottom: 4px;
+    }
+    .filled-field input {
+      background: transparent; border: none; outline: none;
+      color: var(--md-sys-color-on-surface); font-size: 16px;
+      font-family: 'Roboto', sans-serif; width: 100%;
+    }
+    .filled-field input::placeholder { color: var(--md-sys-color-on-surface-variant); opacity: 0.7; }
+    .helper { font-size: 11px; color: var(--md-sys-color-on-surface-variant); padding: 4px 0 12px; letter-spacing: 0.4px; }
+
+    .options-row { display: flex; gap: 8px; padding: 0 16px 16px; flex-wrap: wrap; }
+    .option-chip {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--md-sys-color-surface-container);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: var(--md-shape-full);
+      padding: 4px 12px 4px 8px;
+      font-size: 13px; color: var(--md-sys-color-on-surface-variant);
+      cursor: pointer; user-select: none;
+    }
+    .option-chip .material-icons-round { font-size: 16px; color: var(--md-sys-color-primary); }
+    .option-chip.active {
+      background: var(--md-sys-color-secondary-container);
+      color: var(--md-sys-color-on-secondary-container); border-color: transparent;
+    }
+
+    .btn-section { padding: 0 16px 16px; }
+    .btn-filled {
+      width: 100%; height: 56px; border-radius: var(--md-shape-full);
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      border: none; font-family: 'Roboto', sans-serif;
+      font-size: 15px; font-weight: 500; letter-spacing: 0.1px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .btn-filled:hover { box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .btn-filled:active { background: #6B52B8; }
+    .btn-filled:disabled {
+      background: var(--md-sys-color-surface-container-highest);
+      color: var(--md-sys-color-on-surface-variant); cursor: not-allowed;
+    }
+    .btn-filled .material-icons-round { font-size: 20px; }
+
+    .progress-section { padding: 0 16px 8px; }
+    .progress-linear-wrap {
+      background: var(--md-sys-color-surface-container-highest);
+      border-radius: var(--md-shape-full); height: 4px; overflow: hidden;
+    }
+    .progress-linear-bar {
+      height: 100%; background: var(--md-sys-color-primary);
+      border-radius: var(--md-shape-full); transition: width 0.3s ease;
+    }
+    .progress-text { font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-top: 6px; text-align: right; }
+
+    .stats-row { display: flex; gap: 8px; padding: 8px 16px 16px; }
+    .stat-card {
+      flex: 1; background: var(--md-sys-color-surface-container);
+      border-radius: var(--md-shape-md); padding: 12px; text-align: center;
+    }
+    .stat-card .num { font-size: 28px; font-weight: 400; color: var(--md-sys-color-on-surface); line-height: 1; }
+    .stat-card .lbl { font-size: 11px; color: var(--md-sys-color-on-surface-variant); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .stat-card.found .num { color: var(--md-sys-color-tertiary); }
+    .stat-card.ok .num { color: #8BD6AA; }
+
+    .results-section { padding: 0 16px 100px; }
+    .result-item {
+      background: var(--md-sys-color-surface-container);
+      border-radius: var(--md-shape-md); padding: 12px 16px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.15s;
+    }
+    .result-item:hover { background: var(--md-sys-color-surface-container-high); }
+    .status-badge {
+      width: 36px; height: 36px; border-radius: var(--md-shape-full);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 500; flex-shrink: 0;
+    }
+    .status-200 { background: #1A3D2A; color: #8BD6AA; }
+    .status-301,.status-302 { background: #3D2E1A; color: #FDD699; }
+    .status-403 { background: #3D1A1A; color: #F2B8B5; }
+    .status-404 { background: var(--md-sys-color-surface-container-highest); color: var(--md-sys-color-on-surface-variant); }
+    .status-500 { background: #3D1A1A; color: #F2B8B5; }
+    .result-item .info { flex: 1; min-width: 0; }
+    .result-item .path { font-size: 15px; color: var(--md-sys-color-on-surface); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .result-item .meta { font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .copy-btn { background: none; border: none; color: var(--md-sys-color-on-surface-variant); cursor: pointer; padding: 4px; border-radius: var(--md-shape-full); }
+    .copy-btn:hover { background: var(--md-sys-color-surface-container-highest); }
+
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--md-sys-color-on-surface-variant); }
+    .empty-state .material-icons-round { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+    .empty-state p { font-size: 14px; line-height: 1.5; }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--md-sys-color-surface-container-highest);
+      display: flex; justify-content: space-around;
+      padding: 8px 0; padding-bottom: max(8px, env(safe-area-inset-bottom));
+      z-index: 100;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 4px 16px; border-radius: var(--md-shape-lg);
+      cursor: pointer; color: var(--md-sys-color-on-surface-variant);
+      text-decoration: none; font-size: 12px;
+    }
+    .nav-item .material-icons-round { font-size: 24px; }
+    .nav-item.active { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+    .nav-item:not(.active):hover { background: var(--md-sys-color-surface-container); }
+
+    .snackbar {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: var(--md-sys-color-inverse-surface); color: var(--md-sys-color-inverse-on-surface);
+      padding: 14px 16px; border-radius: var(--md-shape-xs); font-size: 14px;
+      z-index: 999; opacity: 0; transition: transform 0.3s, opacity 0.3s;
+      max-width: 90%; text-align: center;
+    }
+    .snackbar.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 200; display: none; align-items: flex-end; justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-sheet {
+      background: var(--md-sys-color-surface-container-high);
+      border-radius: var(--md-shape-lg) var(--md-shape-lg) 0 0;
+      width: 100%; max-width: 500px; max-height: 80vh; overflow-y: auto; padding: 24px 16px 32px;
+    }
+    .modal-sheet .handle {
+      width: 32px; height: 4px; background: var(--md-sys-color-outline-variant);
+      border-radius: 2px; margin: 0 auto 20px;
+    }
+    .modal-sheet h3 { font-size: 20px; font-weight: 400; color: var(--md-sys-color-on-surface); margin-bottom: 16px; }
+    .detail-row {
+      display: flex; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid var(--md-sys-color-outline-variant);
+      font-size: 14px;
+    }
+    .detail-row .label { color: var(--md-sys-color-on-surface-variant); }
+    .detail-row .value { color: var(--md-sys-color-on-surface); text-align: right; max-width: 60%; word-break: break-all; }
+    .url-box {
+      background: var(--md-sys-color-surface-container); border-radius: var(--md-shape-xs);
+      padding: 12px; font-size: 13px; color: var(--md-sys-color-primary);
+      word-break: break-all; margin: 12px 0; font-family: monospace;
+    }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    .scanning .material-icons-round { animation: pulse 1s infinite; }
+  </style>
+</head>
+<body>
+
+  <div class="top-app-bar">
+    <div class="row">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="logo-icon"><span class="material-icons-round">search</span></div>
+        <h1>DirSweeper</h1>
+      </div>
+      <button class="copy-btn" onclick="exportResults()" title="导出结果">
+        <span class="material-icons-round">share</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="input-section">
+    <div class="filled-field">
+      <label>目标网址</label>
+      <input type="url" id="targetUrl" placeholder="例如: example.com" autocomplete="off" />
+      <div class="helper">输入域名即可扫描常见子目录和路径</div>
+    </div>
+  </div>
+
+  <div class="options-row">
+    <div class="option-chip active" id="chip200" onclick="toggleChip(this)"><span class="material-icons-round">check_circle</span><span>2xx 成功</span></div>
+    <div class="option-chip active" id="chip300" onclick="toggleChip(this)"><span class="material-icons-round">update</span><span>3xx 重定向</span></div>
+    <div class="option-chip active" id="chip403" onclick="toggleChip(this)"><span class="material-icons-round">block</span><span>403 Forbidden</span></div>
+    <div class="option-chip" id="chip404" onclick="toggleChip(this)"><span class="material-icons-round">hide_source</span><span>404 Not Found</span></div>
+  </div>
+
+  <div class="btn-section">
+    <button class="btn-filled" id="scanBtn" onclick="startScan()">
+      <span class="material-icons-round">bolt</span> 开始扫描
+    </button>
+  </div>
+
+  <div class="progress-section" id="progressSection" style="display:none;">
+    <div class="progress-linear-wrap"><div class="progress-linear-bar" id="progressBar" style="width:0%"></div></div>
+    <div class="progress-text" id="progressText">0 / 0</div>
+  </div>
+
+  <div class="stats-row" id="statsRow" style="display:none;">
+    <div class="stat-card"><div class="num" id="statTotal">0</div><div class="lbl">已扫描</div></div>
+    <div class="stat-card found"><div class="num" id="statFound">0</div><div class="lbl">存活路径</div></div>
+    <div class="stat-card ok"><div class="num" id="statDuration">0s</div><div class="lbl">耗时</div></div>
+  </div>
+
+  <div class="results-section">
+    <div class="empty-state" id="emptyState">
+      <span class="material-icons-round">dashboard</span>
+      <p>输入目标网址，点击开始扫描<br/>检测网站存在的子目录与敏感路径</p>
+    </div>
+    <div id="resultsList"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <a class="nav-item active"><span class="material-icons-round">search</span><span>扫描</span></a>
+    <a class="nav-item" href="#" onclick="exportResults();return false;"><span class="material-icons-round">history</span><span>历史</span></a>
+    <a class="nav-item" href="#" onclick="showAbout();return false;"><span class="material-icons-round">info</span><span>关于</span></a>
+  </div>
+
+  <div class="snackbar" id="snackbar"></div>
+
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal-sheet" id="modalSheet">
+      <div class="handle"></div>
+      <h3 id="modalTitle">路径详情</h3>
+      <div class="url-box" id="modalUrl"></div>
+      <div id="modalDetails"></div>
+    </div>
+  </div>
+
+<script>
+  let currentScanId = null;
+  let allResults = [];
+  const BACKEND_URL = (function(){
+    var h = window.location.hostname;
+    if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:8000';
+    return '';
+  })();
+
+  function toggleChip(el) { el.classList.toggle('active'); }
+
+  function getActiveFilters() {
+    const f = [];
+    if (document.getElementById('chip200').classList.contains('active')) f.push(2);
+    if (document.getElementById('chip300').classList.contains('active')) f.push(3);
+    if (document.getElementById('chip403').classList.contains('active')) f.push(403);
+    if (document.getElementById('chip404').classList.contains('active')) f.push(404);
+    return f;
+  }
+
+  function showToast(msg) {
+    const sb = document.getElementById('snackbar');
+    sb.textContent = msg;
+    sb.classList.add('show');
+    setTimeout(() => sb.classList.remove('show'), 2500);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function resetBtn() {
+    const btn = document.getElementById('scanBtn');
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-icons-round">bolt</span> 开始扫描';
+    btn.classList.remove('scanning');
+  }
+
+  async function startScan() {
+    const urlInput = document.getElementById('targetUrl');
+    const url = urlInput.value.trim();
+    if (!url) { showToast('请输入目标网址'); urlInput.focus(); return; }
+    const btn = document.getElementById('scanBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-icons-round scanning">sync</span> 扫描中...';
+    btn.classList.add('scanning');
+    document.getElementById('progressSection').style.display = 'block';
+    document.getElementById('progressBar').style.width = '0%';
+    document.getElementById('progressText').textContent = '0 / 0';
+    document.getElementById('statsRow').style.display = 'none';
+    document.getElementById('resultsList').innerHTML = '';
+    document.getElementById('emptyState').style.display = 'none';
+    allResults = [];
+    currentScanId = null;
+
+    try {
+      const res = await fetch(BACKEND_URL + '/api/scan/start', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({url: url, thread_count: 50, timeout: 3.0})
+      });
+      const data = await res.json();
+      currentScanId = data.scan_id;
+      document.getElementById('progressText').textContent = '0 / ' + data.total_paths;
+      pollScan();
+    } catch (e) {
+      showToast('连接服务器失败，请检查网络');
+      resetBtn();
+    }
+  }
+
+  async function pollScan() {
+    if (!currentScanId) return;
+    try {
+      const res = await fetch(BACKEND_URL + '/api/scan/' + currentScanId);
+      const data = await res.json();
+      document.getElementById('progressBar').style.width = ((data.progress / data.total) * 100).toFixed(1) + '%';
+      document.getElementById('progressText').textContent = data.progress + ' / ' + data.total;
+      if (data.results.length > 0) renderResults(data.results);
+      if (data.status === 'completed') {
+        clearInterval(pollTimer);
+        allResults = data.results;
+        document.getElementById('statDuration').textContent = Math.round(data.duration || 5) + 's';
+        resetBtn();
+        showToast('扫描完成');
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  function renderResults(results) {
+    const list = document.getElementById('resultsList');
+    const filters = getActiveFilters();
+    const filtered = results.filter(function(r) {
+      var s = r.status;
+      if (s >= 200 && s < 300) return filters.includes(2);
+      if (s >= 300 && s < 400) return filters.includes(3);
+      if (s === 403) return filters.includes(403);
+      if (s === 404) return filters.includes(404);
+      return true;
+    });
+    document.getElementById('statTotal').textContent = results.length;
+    document.getElementById('statFound').textContent = filtered.length;
+    document.getElementById('statsRow').style.display = 'flex';
+    list.innerHTML = filtered.map(function(r) {
+      var title = r.title ? r.title.substring(0,40) + (r.title.length > 40 ? '...' : '') : '';
+      return '<div class="result-item" onclick="showDetail(' + JSON.stringify(r).replace(/"/g,'&quot;') + ')">' +
+        '<div class="status-badge status-' + r.status + '">' + r.status + '</div>' +
+        '<div class="info">' +
+          '<div class="path">' + escapeHtml(r.path) + '</div>' +
+          '<div class="meta">' + escapeHtml(title) + (r.words ? ' &middot; ' + r.words + ' words' : '') + '</div>' +
+        '</div>' +
+        '<button class="copy-btn" onclick="event.stopPropagation();copyUrl(\'' + escapeHtml(r.url) + '\')">' +
+          '<span class="material-icons-round">content_copy</span>' +
+        '</button></div>';
+    }).join('');
+  }
+
+  function showDetail(r) {
+    document.getElementById('modalTitle').textContent = '路径: ' + r.path;
+    document.getElementById('modalUrl').textContent = r.url;
+    document.getElementById('modalDetails').innerHTML =
+      '<div class="detail-row"><span class="label">状态码</span><span class="value">' + r.status + '</span></div>' +
+      '<div class="detail-row"><span class="label">标题</span><span class="value">' + (r.title || '无') + '</span></div>' +
+      '<div class="detail-row"><span class="label">页面字数</span><span class="value">' + r.words + '</span></div>' +
+      '<div class="detail-row"><span class="label">完整 URL</span><span class="value">' + escapeHtml(r.url) + '</span></div>';
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modalOverlay')) {
+      document.getElementById('modalOverlay').classList.remove('show');
+    }
+  }
+
+  function copyUrl(url) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(function(){ showToast('已复制'); });
+    } else {
+      showToast('复制失败');
+    }
+  }
+
+  async function exportResults() {
+    if (allResults.length === 0) { showToast('暂无结果可导出'); return; }
+    var text = allResults.map(function(r) { return r.status + '  ' + r.url; }).join('\n');
+    var blob = new Blob([text], {type: 'text/plain'});
+    var file = new File([blob], 'dirsweeper_results.txt', {type: 'text/plain'});
+    if (navigator.share && navigator.canShare && navigator.canShare({files: [file]})) {
+      try { await navigator.share({files: [file], title: 'DirSweeper 扫描结果'}); }
+      catch(e) { if (e.name !== 'AbortError') downloadFile(text); }
+    } else {
+      downloadFile(text);
+    }
+  }
+
+  function downloadFile(text) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], {type: 'text/plain'}));
+    a.download = 'dirsweeper_results.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('已下载结果文件');
+  }
+
+  function showAbout() {
+    document.getElementById('modalTitle').textContent = '关于 DirSweeper';
+    document.getElementById('modalUrl').textContent = 'v1.0.0';
+    document.getElementById('modalDetails').innerHTML =
+      '<div class="detail-row"><span class="label">用途</span><span class="value">网站目录扫描工具</span></div>' +
+      '<div class="detail-row"><span class="label">功能</span><span class="value">探测常见路径、子目录及敏感文件</span></div>' +
+      '<div class="detail-row"><span class="label">词库</span><span class="value">100+ 常见 Web 路径</span></div>' +
+      '<div class="detail-row"><span class="label">界面</span><span class="value">Material Design 3</span></div>';
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+
+  document.getElementById('targetUrl').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') startScan();
+  });
+</script>
+</body>
+</html>
