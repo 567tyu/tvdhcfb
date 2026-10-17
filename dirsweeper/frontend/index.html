@@ -291,6 +291,7 @@
   </div>
 
 <script>
+  window.CapacitorHttp = window.CapacitorHttp || null;
   var COMMON_PATHS = [
     "", "/", "/index.html", "/index.htm", "/home",
     "/about", "/contact", "/contact-us", "/about-us",
@@ -357,12 +358,13 @@
   async function makeRequest(base, path) {
     var url = path === '' || path === '/' ? base : base + (base.endsWith('/') ? '' : '/') + path.replace(/^\//, '');
     try {
-      var res = await fetch(url, {
-        method: 'GET',
-        redirect: 'manual',
-        mode: 'no-cors',
-        cache: 'no-cache',
-      });
+      var res;
+      if (window.CapacitorHttp) {
+        res = await window.CapacitorHttp.get({ url: url, timeout: 3000 });
+      } else {
+        res = await fetch(url, { method: 'GET', redirect: 'manual', mode: 'no-cors', cache: 'no-cache' });
+        res = { status: res.status };
+      }
       return { status: res.status, path: path || '/', url: url };
     } catch (e) {
       return null;
