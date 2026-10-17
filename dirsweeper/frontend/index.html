@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#1B1B2B" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>DirSweeper</title>
+  <title>WebBench</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -81,11 +81,12 @@
       color: var(--md-sys-color-on-surface-variant);
       letter-spacing: 0.1px; line-height: 1; margin-bottom: 4px;
     }
-    .filled-field input {
+    .filled-field input, .filled-field select {
       background: transparent; border: none; outline: none;
       color: var(--md-sys-color-on-surface); font-size: 16px;
       font-family: 'Roboto', sans-serif; width: 100%;
     }
+    .filled-field select { padding-top: 12px; }
     .filled-field input::placeholder { color: var(--md-sys-color-on-surface-variant); opacity: 0.7; }
     .helper { font-size: 11px; color: var(--md-sys-color-on-surface-variant); padding: 4px 0 12px; letter-spacing: 0.4px; }
     .options-row { display: flex; gap: 8px; padding: 0 16px 16px; flex-wrap: wrap; }
@@ -103,6 +104,10 @@
       background: var(--md-sys-color-secondary-container);
       color: var(--md-sys-color-on-secondary-container); border-color: transparent;
     }
+    .params-row { display: flex; gap: 12px; padding: 0 16px 16px; }
+    .param-field { flex: 1; }
+    .param-field .filled-field { height: 56px; padding: 12px 16px 0; }
+    .param-field .filled-field label { margin-bottom: 0; }
     .btn-section { padding: 0 16px 16px; }
     .btn-filled {
       width: 100%; height: 56px; border-radius: var(--md-shape-full);
@@ -120,6 +125,18 @@
       color: var(--md-sys-color-on-surface-variant); cursor: not-allowed;
     }
     .btn-filled .material-icons-round { font-size: 20px; }
+    .btn-outlined {
+      width: 100%; height: 40px; border-radius: var(--md-shape-full);
+      background: transparent;
+      color: var(--md-sys-color-primary);
+      border: 1px solid var(--md-sys-color-primary);
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px; font-weight: 500; letter-spacing: 0.1px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 8px;
+    }
+    .btn-outlined:hover { background: rgba(208,188,255,0.08); }
+    .btn-outlined:disabled { border-color: var(--md-sys-color-on-surface-variant); color: var(--md-sys-color-on-surface-variant); background: transparent; }
     .progress-section { padding: 0 16px 8px; }
     .progress-linear-wrap {
       background: var(--md-sys-color-surface-container-highest);
@@ -130,40 +147,46 @@
       border-radius: var(--md-shape-full); transition: width 0.3s ease;
     }
     .progress-text { font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-top: 6px; text-align: right; }
-    .stats-row { display: flex; gap: 8px; padding: 8px 16px 16px; }
+    .stats-row { display: flex; gap: 8px; padding: 8px 16px 16px; flex-wrap: wrap; }
     .stat-card {
-      flex: 1; background: var(--md-sys-color-surface-container);
+      flex: 1; min-width: 70px; background: var(--md-sys-color-surface-container);
       border-radius: var(--md-shape-md); padding: 12px; text-align: center;
     }
-    .stat-card .num { font-size: 28px; font-weight: 400; color: var(--md-sys-color-on-surface); line-height: 1; }
+    .stat-card .num { font-size: 24px; font-weight: 400; color: var(--md-sys-color-on-surface); line-height: 1; }
     .stat-card .lbl { font-size: 11px; color: var(--md-sys-color-on-surface-variant); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
-    .stat-card.found .num { color: var(--md-sys-color-tertiary); }
-    .stat-card.ok .num { color: #8BD6AA; }
+    .stat-card.success .num { color: #8BD6AA; }
+    .stat-card.error .num { color: #F2B8B5; }
     .results-section { padding: 0 16px 100px; }
     .result-item {
       background: var(--md-sys-color-surface-container);
       border-radius: var(--md-shape-md); padding: 12px 16px; margin-bottom: 8px;
-      display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.15s;
+      display: flex; align-items: center; gap: 12px;
     }
-    .result-item:hover { background: var(--md-sys-color-surface-container-high); }
     .status-badge {
       width: 36px; height: 36px; border-radius: var(--md-shape-full);
       display: flex; align-items: center; justify-content: center;
       font-size: 13px; font-weight: 500; flex-shrink: 0;
     }
-    .status-200 { background: #1A3D2A; color: #8BD6AA; }
-    .status-301,.status-302 { background: #3D2E1A; color: #FDD699; }
-    .status-403 { background: #3D1A1A; color: #F2B8B5; }
-    .status-404 { background: var(--md-sys-color-surface-container-highest); color: var(--md-sys-color-on-surface-variant); }
-    .status-500 { background: #3D1A1A; color: #F2B8B5; }
+    .status-2xx { background: #1A3D2A; color: #8BD6AA; }
+    .status-4xx { background: #3D1A1A; color: #F2B8B5; }
+    .status-5xx { background: #3D1A1A; color: #F2B8B5; }
+    .status-err { background: #3D1A1A; color: #F2B8B5; }
     .result-item .info { flex: 1; min-width: 0; }
     .result-item .path { font-size: 15px; color: var(--md-sys-color-on-surface); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .result-item .meta { font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .copy-btn { background: none; border: none; color: var(--md-sys-color-on-surface-variant); cursor: pointer; padding: 4px; border-radius: var(--md-shape-full); }
-    .copy-btn:hover { background: var(--md-sys-color-surface-container-highest); }
+    .result-item .meta { font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-top: 2px; }
+    .result-item .time { font-size: 13px; color: var(--md-sys-color-primary); flex-shrink: 0; margin-left: 8px; }
     .empty-state { text-align: center; padding: 48px 24px; color: var(--md-sys-color-on-surface-variant); }
     .empty-state .material-icons-round { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
     .empty-state p { font-size: 14px; line-height: 1.5; }
+    .summary-card {
+      background: var(--md-sys-color-surface-container);
+      border-radius: var(--md-shape-md); padding: 16px; margin-bottom: 16px;
+    }
+    .summary-card h3 { font-size: 16px; font-weight: 500; color: var(--md-sys-color-on-surface); margin-bottom: 12px; }
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .summary-item { display: flex; flex-direction: column; }
+    .summary-item .val { font-size: 20px; font-weight: 400; color: var(--md-sys-color-on-surface); }
+    .summary-item .lbl { font-size: 11px; color: var(--md-sys-color-on-surface-variant); margin-top: 2px; }
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: var(--md-sys-color-surface-container-highest);
@@ -179,7 +202,6 @@
     }
     .nav-item .material-icons-round { font-size: 24px; }
     .nav-item.active { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
-    .nav-item:not(.active):hover { background: var(--md-sys-color-surface-container); }
     .snackbar {
       position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px);
       background: var(--md-sys-color-inverse-surface); color: var(--md-sys-color-inverse-on-surface);
@@ -216,7 +238,7 @@
       word-break: break-all; margin: 12px 0; font-family: monospace;
     }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-    .scanning .material-icons-round { animation: pulse 1s infinite; }
+    .running .material-icons-round { animation: pulse 1s infinite; }
   </style>
 </head>
 <body>
@@ -224,10 +246,10 @@
   <div class="top-app-bar">
     <div class="row">
       <div style="display:flex;align-items:center;gap:12px;">
-        <div class="logo-icon"><span class="material-icons-round">search</span></div>
-        <h1>DirSweeper</h1>
+        <div class="logo-icon"><span class="material-icons-round">speed</span></div>
+        <h1>WebBench</h1>
       </div>
-      <button class="copy-btn" onclick="exportResults()" title="导出结果">
+      <button class="copy-btn" onclick="exportResults()" title="导出结果" style="background:none;border:none;color:var(--md-sys-color-on-surface-variant);cursor:pointer;padding:4px;border-radius:var(--md-shape-full);">
         <span class="material-icons-round">share</span>
       </button>
     </div>
@@ -237,20 +259,45 @@
     <div class="filled-field">
       <label>目标网址</label>
       <input type="url" id="targetUrl" placeholder="例如: example.com" autocomplete="off" />
-      <div class="helper">输入域名即可扫描常见子目录和路径</div>
+      <div class="helper">输入要测试的网站地址</div>
     </div>
   </div>
 
-  <div class="options-row">
-    <div class="option-chip active" id="chip200" onclick="toggleChip(this)"><span class="material-icons-round">check_circle</span><span>2xx 成功</span></div>
-    <div class="option-chip active" id="chip300" onclick="toggleChip(this)"><span class="material-icons-round">update</span><span>3xx 重定向</span></div>
-    <div class="option-chip active" id="chip403" onclick="toggleChip(this)"><span class="material-icons-round">block</span><span>403 Forbidden</span></div>
-    <div class="option-chip" id="chip404" onclick="toggleChip(this)"><span class="material-icons-round">hide_source</span><span>404 Not Found</span></div>
+  <div class="params-row">
+    <div class="param-field">
+      <div class="filled-field">
+        <label>并发请求数</label>
+        <select id="concurrency">
+          <option value="1">1 (单线程)</option>
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+    </div>
+    <div class="param-field">
+      <div class="filled-field">
+        <label>测试时长 (秒)</label>
+        <select id="duration">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="30">30</option>
+          <option value="60">60</option>
+          <option value="120">120</option>
+          <option value="300">300</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <div class="btn-section">
-    <button class="btn-filled" id="scanBtn" onclick="startScan()">
-      <span class="material-icons-round">bolt</span> 开始扫描
+    <button class="btn-filled" id="startBtn" onclick="startTest()">
+      <span class="material-icons-round">play_arrow</span> 开始测试
+    </button>
+    <button class="btn-outlined" id="stopBtn" onclick="stopTest()" style="display:none;">
+      <span class="material-icons-round">stop</span> 停止测试
     </button>
   </div>
 
@@ -260,21 +307,37 @@
   </div>
 
   <div class="stats-row" id="statsRow" style="display:none;">
-    <div class="stat-card"><div class="num" id="statTotal">0</div><div class="lbl">已扫描</div></div>
-    <div class="stat-card found"><div class="num" id="statFound">0</div><div class="lbl">存活路径</div></div>
-    <div class="stat-card ok"><div class="num" id="statDuration">0s</div><div class="lbl">耗时</div></div>
+    <div class="stat-card"><div class="num" id="statRequests">0</div><div class="lbl">总请求</div></div>
+    <div class="stat-card success"><div class="num" id="statSuccess">0</div><div class="lbl">成功</div></div>
+    <div class="stat-card error"><div class="num" id="statError">0</div><div class="lbl">失败</div></div>
+    <div class="stat-card"><div class="num" id="statQps">0</div><div class="lbl">QPS</div></div>
   </div>
 
   <div class="results-section">
+    <div id="summarySection" style="display:none;">
+      <div class="summary-card">
+        <h3>测试摘要</h3>
+        <div class="summary-grid">
+          <div class="summary-item"><span class="val" id="sumTotal">0</span><span class="lbl">总请求数</span></div>
+          <div class="summary-item"><span class="val" id="sumSuccess">0</span><span class="lbl">成功请求</span></div>
+          <div class="summary-item"><span class="val" id="sumFail">0</span><span class="lbl">失败请求</span></div>
+          <div class="summary-item"><span class="val" id="sumAvgTime">0ms</span><span class="lbl">平均响应时间</span></div>
+          <div class="summary-item"><span class="val" id="sumMinTime">0ms</span><span class="lbl">最小响应时间</span></div>
+          <div class="summary-item"><span class="val" id="sumMaxTime">0ms</span><span class="lbl">最大响应时间</span></div>
+          <div class="summary-item"><span class="val" id="sumDuration">0s</span><span class="lbl">测试时长</span></div>
+          <div class="summary-item"><span class="val" id="sumQps">0</span><span class="lbl">平均 QPS</span></div>
+        </div>
+      </div>
+    </div>
     <div class="empty-state" id="emptyState">
-      <span class="material-icons-round">dashboard</span>
-      <p>输入目标网址，点击开始扫描<br/>检测网站存在的子目录与敏感路径</p>
+      <span class="material-icons-round">speed</span>
+      <p>输入目标网址，设置并发数和时长<br/>进行网站压力测试</p>
     </div>
     <div id="resultsList"></div>
   </div>
 
   <div class="bottom-nav">
-    <a class="nav-item active"><span class="material-icons-round">search</span><span>扫描</span></a>
+    <a class="nav-item active"><span class="material-icons-round">speed</span><span>压测</span></a>
     <a class="nav-item" href="#" onclick="exportResults();return false;"><span class="material-icons-round">history</span><span>历史</span></a>
     <a class="nav-item" href="#" onclick="showAbout();return false;"><span class="material-icons-round">info</span><span>关于</span></a>
   </div>
@@ -284,7 +347,7 @@
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
     <div class="modal-sheet" id="modalSheet">
       <div class="handle"></div>
-      <h3 id="modalTitle">路径详情</h3>
+      <h3 id="modalTitle">请求详情</h3>
       <div class="url-box" id="modalUrl"></div>
       <div id="modalDetails"></div>
     </div>
@@ -292,50 +355,7 @@
 
 <script>
   window.CapacitorHttp = window.CapacitorHttp || null;
-  var COMMON_PATHS = [
-    "", "/", "/index.html", "/index.htm", "/home",
-    "/about", "/contact", "/contact-us", "/about-us",
-    "/blog", "/news", "/articles",
-    "/admin", "/administrator", "/admin panel", "/wp-admin",
-    "/login", "/logout", "/signup", "/register", "/auth",
-    "/api", "/api/v1", "/api/v2", "/graphql", "/graphiql",
-    "/dashboard", "/panel", "/control", "/cpanel",
-    "/config", "/configuration", "/settings",
-    "/static", "/assets", "/media", "/images", "/css", "/js",
-    "/docs", "/documentation", "/help", "/support",
-    "/favicon.ico", "/robots.txt", "/sitemap.xml", "/.env",
-    "/.git", "/.gitignore", "/.svn", "/.htaccess",
-    "/wp-login.php", "/wp-content", "/wp-includes",
-    "/xmlrpc.php", "/wp-config.php",
-    "/phpmyadmin", "/mysql", "/db", "/database",
-    "/server-status", "/server-info", "/info", "/phpinfo",
-    "/test", "/testing", "/staging", "/dev",
-    "/backup", "/backups", "/dump", "/sql",
-    "/upload", "/uploads", "/files", "/file",
-    "/search", "/profile", "/user", "/users",
-    "/product", "/products", "/shop", "/store", "/cart",
-    "/order", "/orders", "/checkout",
-    "/tag", "/tags", "/category", "/categories",
-    "/feed", "/rss", "/atom",
-    "/health", "/healthz", "/status", "/ping",
-    "/metrics", "/prometheus",
-    "/swagger-ui", "/swagger", "/openapi",
-    "/actuator", "/actuator/health",
-    "/debug", "/trace",
-  ];
-
-  var allResults = [];
-
-  function toggleChip(el) { el.classList.toggle('active'); }
-
-  function getActiveFilters() {
-    var f = [];
-    if (document.getElementById('chip200').classList.contains('active')) f.push(2);
-    if (document.getElementById('chip300').classList.contains('active')) f.push(3);
-    if (document.getElementById('chip403').classList.contains('active')) f.push(403);
-    if (document.getElementById('chip404').classList.contains('active')) f.push(404);
-    return f;
-  }
+  var testState = { running: false, abort: false, results: [], startTime: 0 };
 
   function showToast(msg) {
     var sb = document.getElementById('snackbar');
@@ -348,107 +368,175 @@
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  function resetBtn() {
-    var btn = document.getElementById('scanBtn');
-    btn.disabled = false;
-    btn.innerHTML = '<span class="material-icons-round">bolt</span> 开始扫描';
-    btn.classList.remove('scanning');
-  }
-
-  async function makeRequest(base, path) {
-    var url = path === '' || path === '/' ? base : base + (base.endsWith('/') ? '' : '/') + path.replace(/^\//, '');
+  async function makeRequest(url) {
+    var start = performance.now();
     try {
       var res;
       if (window.CapacitorHttp) {
-        res = await window.CapacitorHttp.get({ url: url, timeout: 3000 });
+        res = await window.CapacitorHttp.get({ url: url, timeout: 5000 });
       } else {
         res = await fetch(url, { method: 'GET', redirect: 'manual', mode: 'no-cors', cache: 'no-cache' });
         res = { status: res.status };
       }
-      return { status: res.status, path: path || '/', url: url };
+      var elapsed = performance.now() - start;
+      return { status: res.status, time: elapsed, error: null };
     } catch (e) {
-      return null;
+      var elapsed = performance.now() - start;
+      return { status: 0, time: elapsed, error: e.message || 'Network Error' };
     }
   }
 
-  async function startScan() {
+  async function runRequest(url) {
+    return makeRequest(url);
+  }
+
+  async function startWorker(url, concurrencyId) {
+    while (!testState.abort) {
+      var result = await runRequest(url);
+      testState.results.push(result);
+    }
+  }
+
+  async function startTest() {
     var urlInput = document.getElementById('targetUrl');
     var rawUrl = urlInput.value.trim();
     if (!rawUrl) { showToast('请输入目标网址'); urlInput.focus(); return; }
     if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
       rawUrl = 'https://' + rawUrl;
     }
-    var base = rawUrl.replace(/\/$/, '');
 
-    var btn = document.getElementById('scanBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="material-icons-round scanning">sync</span> 扫描中...';
-    btn.classList.add('scanning');
+    var concurrency = parseInt(document.getElementById('concurrency').value);
+    var duration = parseInt(document.getElementById('duration').value);
+
+    testState = { running: true, abort: false, results: [], startTime: Date.now() };
+
+    document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('stopBtn').style.display = 'flex';
     document.getElementById('progressSection').style.display = 'block';
-    document.getElementById('progressBar').style.width = '0%';
-    document.getElementById('progressText').textContent = '0 / ' + COMMON_PATHS.length;
-    document.getElementById('statsRow').style.display = 'none';
-    document.getElementById('resultsList').innerHTML = '';
+    document.getElementById('statsRow').style.display = 'flex';
     document.getElementById('emptyState').style.display = 'none';
-    allResults = [];
+    document.getElementById('summarySection').style.display = 'none';
+    document.getElementById('resultsList').innerHTML = '';
 
-    var results = [];
-    var completed = 0;
-    var startTime = Date.now();
+    var totalRequests = concurrency * duration;
+    document.getElementById('progressText').textContent = '0 / ' + totalRequests;
 
-    for (var i = 0; i < COMMON_PATHS.length; i++) {
-      var path = COMMON_PATHS[i];
-      var result = await makeRequest(base, path);
-      if (result) {
-        results.push(result);
-      }
-      completed++;
-      document.getElementById('progressBar').style.width = ((completed / COMMON_PATHS.length) * 100).toFixed(1) + '%';
-      document.getElementById('progressText').textContent = completed + ' / ' + COMMON_PATHS.length;
-      if (results.length > 0) renderResults(results, base);
+    for (var i = 0; i < concurrency; i++) {
+      startWorker(rawUrl, i);
     }
 
-    allResults = results;
-    var elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    document.getElementById('statDuration').textContent = elapsed + 's';
-    resetBtn();
-    showToast('扫描完成 (' + allResults.length + ' 条存活路径)');
+    var progressInterval = setInterval(function() {
+      var elapsed = (Date.now() - testState.startTime) / 1000;
+      var completed = testState.results.length;
+      var qps = elapsed > 0 ? (completed / elapsed).toFixed(1) : 0;
+      var progress = Math.min(100, (completed / totalRequests) * 100);
+
+      document.getElementById('progressBar').style.width = progress.toFixed(1) + '%';
+      document.getElementById('progressText').textContent = completed + ' / ' + totalRequests;
+      document.getElementById('statRequests').textContent = completed;
+      document.getElementById('statQps').textContent = qps;
+
+      var success = testState.results.filter(function(r) { return r.status >= 200 && r.status < 400; }).length;
+      var error = testState.results.length - success;
+      document.getElementById('statSuccess').textContent = success;
+      document.getElementById('statError').textContent = error;
+    }, 500);
+
+    setTimeout(function() {
+      clearInterval(progressInterval);
+      testState.abort = true;
+      showResults();
+    }, duration * 1000);
   }
 
-  function renderResults(results, base) {
-    var list = document.getElementById('resultsList');
-    var filters = getActiveFilters();
-    var filtered = results.filter(function(r) {
-      var s = r.status;
-      if (s >= 200 && s < 300) return filters.includes(2);
-      if (s >= 300 && s < 400) return filters.includes(3);
-      if (s === 403) return filters.includes(403);
-      if (s === 404) return filters.includes(404);
-      return true;
-    });
-    document.getElementById('statTotal').textContent = results.length;
-    document.getElementById('statFound').textContent = filtered.length;
-    document.getElementById('statsRow').style.display = 'flex';
-    list.innerHTML = filtered.map(function(r) {
-      var fullUrl = r.url || (base + (r.path === '/' ? '' : '/' + r.path));
-      return '<div class="result-item" onclick="showDetail(\'' + escapeHtml(r.path) + '\',\'' + escapeHtml(fullUrl) + '\',' + r.status + ')">' +
-        '<div class="status-badge status-' + r.status + '">' + r.status + '</div>' +
+  function stopTest() {
+    testState.abort = true;
+    setTimeout(showResults, 500);
+  }
+
+  function showResults() {
+    var results = testState.results;
+    var duration = (Date.now() - testState.startTime) / 1000;
+    var success = results.filter(function(r) { return r.status >= 200 && r.status < 400; }).length;
+    var fail = results.length - success;
+    var times = results.map(function(r) { return r.time; });
+    var avgTime = times.reduce(function(a,b){return a+b;},0) / times.length;
+    var minTime = Math.min.apply(null, times);
+    var maxTime = Math.max.apply(null, times);
+    var qps = duration > 0 ? (results.length / duration).toFixed(1) : 0;
+
+    document.getElementById('sumTotal').textContent = results.length;
+    document.getElementById('sumSuccess').textContent = success;
+    document.getElementById('sumFail').textContent = fail;
+    document.getElementById('sumAvgTime').textContent = avgTime.toFixed(0) + 'ms';
+    document.getElementById('sumMinTime').textContent = minTime.toFixed(0) + 'ms';
+    document.getElementById('sumMaxTime').textContent = maxTime.toFixed(0) + 'ms';
+    document.getElementById('sumDuration').textContent = duration.toFixed(1) + 's';
+    document.getElementById('sumQps').textContent = qps;
+    document.getElementById('summarySection').style.display = 'block';
+
+    var recent = results.slice(-20).reverse();
+    document.getElementById('resultsList').innerHTML = recent.map(function(r, i) {
+      var statusClass = r.status >= 200 && r.status < 400 ? 'status-2xx' : (r.status >= 400 ? 'status-4xx' : 'status-err');
+      return '<div class="result-item">' +
+        '<div class="status-badge ' + statusClass + '">' + r.status + '</div>' +
         '<div class="info">' +
-          '<div class="path">' + escapeHtml(r.path) + '</div>' +
-          '<div class="meta">状态码: ' + r.status + '</div>' +
+          '<div class="path">请求 #' + (results.length - i) + '</div>' +
+          '<div class="meta">' + (r.error || 'OK') + '</div>' +
         '</div>' +
-        '<button class="copy-btn" onclick="event.stopPropagation();copyUrl(\'' + escapeHtml(fullUrl) + '\')">' +
-          '<span class="material-icons-round">content_copy</span>' +
-        '</button></div>';
+        '<div class="time">' + r.time.toFixed(0) + 'ms</div>' +
+      '</div>';
     }).join('');
+
+    document.getElementById('startBtn').style.display = 'flex';
+    document.getElementById('stopBtn').style.display = 'none';
+    showToast('测试完成 (' + results.length + ' 个请求)');
   }
 
-  window.showDetail = function(path, url, status) {
-    document.getElementById('modalTitle').textContent = '路径: ' + path;
-    document.getElementById('modalUrl').textContent = url;
+  window.exportResults = function() {
+    if (testState.results.length === 0) { showToast('暂无结果可导出'); return; }
+    var results = testState.results;
+    var duration = (Date.now() - testState.startTime) / 1000;
+    var lines = ['WebBench 测试结果', '================'];
+    lines.push('目标: ' + document.getElementById('targetUrl').value);
+    lines.push('并发: ' + document.getElementById('concurrency').value);
+    lines.push('时长: ' + document.getElementById('duration').value + '秒');
+    lines.push('总请求: ' + results.length);
+    lines.push('成功: ' + results.filter(function(r){return r.status>=200&&r.status<400;}).length);
+    lines.push('失败: ' + (results.length - results.filter(function(r){return r.status>=200&&r.status<400;}).length));
+    lines.push('平均响应: ' + (results.map(function(r){return r.time;}).reduce(function(a,b){return a+b;},0)/results.length).toFixed(0) + 'ms');
+    lines.push('');
+    lines.push('最近20条记录:');
+    results.slice(-20).forEach(function(r, i) {
+      lines.push((results.length - 19 + i) + '. status=' + r.status + ' time=' + r.time.toFixed(0) + 'ms ' + (r.error ? '(' + r.error + ')' : ''));
+    });
+    var blob = new Blob([lines.join('\n')], {type: 'text/plain'});
+    var file = new File([blob], 'webbench_results.txt', {type: 'text/plain'});
+    if (navigator.share && navigator.canShare && navigator.canShare({files: [file]})) {
+      try { navigator.share({files: [file], title: 'WebBench 测试结果'}); }
+      catch(e) { if (e.name !== 'AbortError') downloadFile(lines.join('\n')); }
+    } else {
+      downloadFile(lines.join('\n'));
+    }
+  };
+
+  function downloadFile(text) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], {type: 'text/plain'}));
+    a.download = 'webbench_results.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('已下载结果文件');
+  }
+
+  window.showAbout = function() {
+    document.getElementById('modalTitle').textContent = '关于 WebBench';
+    document.getElementById('modalUrl').textContent = 'v1.0.0';
     document.getElementById('modalDetails').innerHTML =
-      '<div class="detail-row"><span class="label">状态码</span><span class="value">' + status + '</span></div>' +
-      '<div class="detail-row"><span class="label">完整 URL</span><span class="value">' + escapeHtml(url) + '</span></div>';
+      '<div class="detail-row"><span class="label">用途</span><span class="value">网站压力测试工具</span></div>' +
+      '<div class="detail-row"><span class="label">功能</span><span class="value">模拟多并发请求，测试网站性能</span></div>' +
+      '<div class="detail-row"><span class="label">指标</span><span class="value">QPS、响应时间、成功率</span></div>' +
+      '<div class="detail-row"><span class="label">界面</span><span class="value">Material Design 3</span></div>';
     document.getElementById('modalOverlay').classList.add('show');
   };
 
@@ -458,49 +546,8 @@
     }
   };
 
-  window.copyUrl = function(url) {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(url).then(function(){ showToast('已复制'); });
-    } else {
-      showToast('复制失败');
-    }
-  };
-
-  window.exportResults = function() {
-    if (allResults.length === 0) { showToast('暂无结果可导出'); return; }
-    var text = allResults.map(function(r) { return r.status + '  ' + (r.url || r.path); }).join('\n');
-    var blob = new Blob([text], {type: 'text/plain'});
-    var file = new File([blob], 'dirsweeper_results.txt', {type: 'text/plain'});
-    if (navigator.share && navigator.canShare && navigator.canShare({files: [file]})) {
-      try { navigator.share({files: [file], title: 'DirSweeper 扫描结果'}); }
-      catch(e) { if (e.name !== 'AbortError') downloadFile(text); }
-    } else {
-      downloadFile(text);
-    }
-  };
-
-  function downloadFile(text) {
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([text], {type: 'text/plain'}));
-    a.download = 'dirsweeper_results.txt';
-    a.click();
-    URL.revokeObjectURL(a.href);
-    showToast('已下载结果文件');
-  }
-
-  window.showAbout = function() {
-    document.getElementById('modalTitle').textContent = '关于 DirSweeper';
-    document.getElementById('modalUrl').textContent = 'v1.0.0';
-    document.getElementById('modalDetails').innerHTML =
-      '<div class="detail-row"><span class="label">用途</span><span class="value">网站目录扫描工具</span></div>' +
-      '<div class="detail-row"><span class="label">功能</span><span class="value">探测常见路径、子目录及敏感文件</span></div>' +
-      '<div class="detail-row"><span class="label">词库</span><span class="value">106 常见 Web 路径</span></div>' +
-      '<div class="detail-row"><span class="label">界面</span><span class="value">Material Design 3</span></div>';
-    document.getElementById('modalOverlay').classList.add('show');
-  };
-
   document.getElementById('targetUrl').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') startScan();
+    if (e.key === 'Enter') startTest();
   });
 </script>
 </body>
