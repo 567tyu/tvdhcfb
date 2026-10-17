@@ -266,15 +266,14 @@
   <div class="params-row">
     <div class="param-field">
       <div class="filled-field">
-        <label>并发请求数</label>
-        <select id="concurrency">
-          <option value="1">1 (单线程)</option>
-          <option value="5">5</option>
-          <option value="10" selected>10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-        </select>
+        <label>并发数 (1-10000)</label>
+        <input type="number" id="concurrency" min="1" max="10000" value="10" placeholder="输入并发数" />
+      </div>
+    </div>
+    <div class="param-field">
+      <div class="filled-field">
+        <label>总请求数 (可选)</label>
+        <input type="number" id="totalRequests" min="1" max="1000000" value="" placeholder="不填则按时长" />
       </div>
     </div>
     <div class="param-field">
@@ -403,11 +402,11 @@
     return makeRequest(url);
   }
 
-  async function startWorker(url, concurrencyId, intervalMs) {
-    while (!testState.abort) {
+  async function startWorker(url, workerId, intervalMs, stopSignal) {
+    while (!testState.abort && !stopSignal.stopped) {
       var result = await runRequest(url);
       testState.results.push(result);
-      if (intervalMs > 0 && !testState.abort) {
+      if (intervalMs > 0 && !testState.abort && !stopSignal.stopped) {
         await new Promise(function(r) { setTimeout(r, intervalMs); });
       }
     }
@@ -421,9 +420,15 @@
       rawUrl = 'https://' + rawUrl;
     }
 
-    var concurrency = parseInt(document.getElementById('concurrency').value);
+    var concurrency = parseInt(document.getElementById('concurrency').value) || 10;
     var duration = parseInt(document.getElementById('duration').value);
     var interval = parseInt(document.getElementById('interval').value);
+    var totalReqInput = document.getElementById('totalRequests').value.trim();
+    var totalRequests = totalReqInput ? parseInt(totalReqInput) : concurrency * duration;
+
+    // Validate concurrency
+    if (concurrency < 1) concurrency = 1;
+    if (concurrency > 10000) concurrency = 10000;
 
     testState = { running: true, abort: false, results: [], startTime: Date.now() };
 
@@ -439,7 +444,7 @@
     document.getElementById('progressText').textContent = '0 / ' + totalRequests;
 
     for (var i = 0; i < concurrency; i++) {
-      startWorker(rawUrl, i, interval);
+      startWorker(rawUrl, i, interval, testState);
     }
 
     var progressInterval = setInterval(function() {
@@ -516,7 +521,8 @@
     var duration = (Date.now() - testState.startTime) / 1000;
     var lines = ['WebBench 测试结果', '================'];
     lines.push('目标: ' + document.getElementById('targetUrl').value);
-    lines.push('并发: ' + document.getElementById('concurrency').value);
+    lines.push('并发: ' + (parseInt(document.getElementById('concurrency').value) || 10));
+    lines.push('总请求: ' + (totalReqInput || (concurrency * duration)));
     lines.push('时长: ' + document.getElementById('duration').value + '秒');
     lines.push('间隔: ' + document.getElementById('interval').value + '毫秒');
     lines.push('总请求: ' + results.length);
