@@ -290,6 +290,19 @@
         </select>
       </div>
     </div>
+    <div class="param-field">
+      <div class="filled-field">
+        <label>并发间隔 (毫秒)</label>
+        <select id="interval">
+          <option value="0">0 (立即)</option>
+          <option value="100">100</option>
+          <option value="500">500</option>
+          <option value="1000" selected>1000 (1秒)</option>
+          <option value="2000">2000 (2秒)</option>
+          <option value="5000">5000 (5秒)</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <div class="btn-section">
@@ -390,10 +403,13 @@
     return makeRequest(url);
   }
 
-  async function startWorker(url, concurrencyId) {
+  async function startWorker(url, concurrencyId, intervalMs) {
     while (!testState.abort) {
       var result = await runRequest(url);
       testState.results.push(result);
+      if (intervalMs > 0 && !testState.abort) {
+        await new Promise(function(r) { setTimeout(r, intervalMs); });
+      }
     }
   }
 
@@ -407,6 +423,7 @@
 
     var concurrency = parseInt(document.getElementById('concurrency').value);
     var duration = parseInt(document.getElementById('duration').value);
+    var interval = parseInt(document.getElementById('interval').value);
 
     testState = { running: true, abort: false, results: [], startTime: Date.now() };
 
@@ -422,7 +439,7 @@
     document.getElementById('progressText').textContent = '0 / ' + totalRequests;
 
     for (var i = 0; i < concurrency; i++) {
-      startWorker(rawUrl, i);
+      startWorker(rawUrl, i, interval);
     }
 
     var progressInterval = setInterval(function() {
@@ -501,6 +518,7 @@
     lines.push('目标: ' + document.getElementById('targetUrl').value);
     lines.push('并发: ' + document.getElementById('concurrency').value);
     lines.push('时长: ' + document.getElementById('duration').value + '秒');
+    lines.push('间隔: ' + document.getElementById('interval').value + '毫秒');
     lines.push('总请求: ' + results.length);
     lines.push('成功: ' + results.filter(function(r){return r.status>=200&&r.status<400;}).length);
     lines.push('失败: ' + (results.length - results.filter(function(r){return r.status>=200&&r.status<400;}).length));
